@@ -25,6 +25,8 @@ import android.widget.Toast;
 import com.example.djhoa.teamprojects.R;
 import com.example.djhoa.teamprojects.Components.SmsListener;
 
+import java.util.Map;
+
 
 public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0 ;
@@ -35,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     String phoneNo, message;
     SmsListener smsListener;
     IntentFilter intentFilter;
+    Map<String, String> users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +51,23 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 sendSMSMessage();
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
             }
         });
 
         sendBtn = findViewById(R.id.btnSendSMS);
-//        registerBtn = findViewById(R.id.register);
+        registerBtn = findViewById(R.id.register);
         txtMessage = findViewById(R.id.editText2);
         txtphoneNo = findViewById(R.id.editText);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                changeViews();
+                listenerView();
+            }
+        });
+
+        registerBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                registerView();
             }
         });
 
@@ -105,15 +112,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-//                ActivityCompat.requestPermissions(this,
-//                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-//                        MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-    public void changeViews() {
+    public void listenerView() {
         Intent intent = new Intent(this, ListenerActivity.class);
-        EditText editText = (EditText) findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        intent.putExtra("Wowdy!", message);
+//        EditText editText = (EditText) findViewById(R.id.editText);
+//        String message = editText.getText().toString();
+//        intent.putExtra("Wowdy!", message);
         startActivity(intent);
+    }
+
+    public void registerView() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        int requestCode = 420;
+        startActivityForResult(intent, requestCode);
     }
 
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
@@ -135,6 +145,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        // Collect data from the intent and use it
+        String name = data.getStringExtra("name");
+        String number = data.getStringExtra("number");
+        Toast.makeText(getApplicationContext(), "Welcome back, " + name, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -160,4 +178,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+//    ActivityCompat.requestPermissions(this,
+//            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+//            MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
 }
