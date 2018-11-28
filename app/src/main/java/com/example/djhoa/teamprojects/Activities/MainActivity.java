@@ -12,6 +12,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.Manifest;
@@ -20,11 +22,15 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.telephony.SmsManager;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.djhoa.teamprojects.R;
 import com.example.djhoa.teamprojects.Components.SmsListener;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -37,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
     String phoneNo, message;
     SmsListener smsListener;
     IntentFilter intentFilter;
-    Map<String, String> users;
+    Map<String, String> numbersByUser;
+    ArrayList<String> users;
+    Spinner spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Initialize containers
+        users = new ArrayList<>();
+        numbersByUser = new HashMap<>();
+
+        // On-screen components
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,12 +83,31 @@ public class MainActivity extends AppCompatActivity {
                 registerView();
             }
         });
+        spinner = findViewById(R.id.spinner);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                txtphoneNo.setText(numbersByUser.get(users.get(position)), TextView.BufferType.EDITABLE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Do Nothing
+            }
+
+        });
+        refreshSpinner();
 
         //SMS event receiver
         smsListener = new SmsListener(getApplicationContext());
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
         registerReceiver(smsListener, intentFilter);
+    }
+
+    public void refreshSpinner() {
+        ArrayAdapter<String> adapter = new ArrayAdapter<> (this,android.R.layout.simple_spinner_dropdown_item, users);
+        spinner.setAdapter(adapter);
     }
 
     protected void sendSMSMessage() {
@@ -120,12 +152,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void registerView() {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        int requestCode = 420;
-        startActivityForResult(intent, requestCode);
-    }
-
     public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
         Toast.makeText(getApplicationContext(), "Test", Toast.LENGTH_LONG).show();
         switch (requestCode) {
@@ -147,12 +173,26 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void registerView() {
+        Intent intent = new Intent(this, RegisterActivity.class);
+        int requestCode = 420;
+        startActivityForResult(intent, requestCode);
+    }
+
     @Override
     protected void onActivityResult (int requestCode, int resultCode, Intent data) {
-        // Collect data from the intent and use it
+        // if no result, return
+        if(resultCode != -1) {
+            return;
+        }
         String name = data.getStringExtra("name");
         String number = data.getStringExtra("number");
-        Toast.makeText(getApplicationContext(), "Welcome back, " + name, Toast.LENGTH_SHORT).show();
+        numbersByUser.put(name, number);
+        if(!users.contains(name)) {
+            users.add(name);
+        }
+        refreshSpinner();
+        Toast.makeText(getApplicationContext(), "User \"" + name + "\" registered", Toast.LENGTH_SHORT).show();
     }
 
     @Override
