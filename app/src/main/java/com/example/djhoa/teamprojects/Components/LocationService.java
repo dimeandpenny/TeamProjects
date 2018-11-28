@@ -1,4 +1,4 @@
-package com.example.djhoa.teamprojects;
+package com.example.djhoa.teamprojects.Components;
 
 import android.app.Service;
 import android.content.Intent;

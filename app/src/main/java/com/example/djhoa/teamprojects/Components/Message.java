@@ -1,4 +1,4 @@
-package com.example.djhoa.teamprojects;
+package com.example.djhoa.teamprojects.Components;
 
 import android.content.Context;
 import android.widget.Toast;

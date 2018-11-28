@@ -1,4 +1,4 @@
-package com.example.djhoa.teamprojects;
+package com.example.djhoa.teamprojects.Components;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +7,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 

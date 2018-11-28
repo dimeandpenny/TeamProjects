@@ -1,4 +1,4 @@
-package com.example.djhoa.teamprojects;
+package com.example.djhoa.teamprojects.Activities;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -9,7 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import com.example.djhoa.teamprojects.Components.Message;
+import com.example.djhoa.teamprojects.R;
+import com.example.djhoa.teamprojects.Components.SmsListener;
 
 public class ListenerActivity extends AppCompatActivity {
     IntentFilter intentFilter;
