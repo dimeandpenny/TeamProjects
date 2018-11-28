@@ -68,10 +68,10 @@ public class ListenerActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(getApplicationContext(), "No messages in queue", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

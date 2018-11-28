@@ -30,11 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS = 0 ;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 0;
 
-    Button sendBtn;
-    EditText txtphoneNo;
-    EditText txtMessage;
-    String phoneNo;
-    String message;
+    Button sendBtn, registerBtn;
+    EditText txtphoneNo, txtMessage;
+    String phoneNo, message;
     SmsListener smsListener;
     IntentFilter intentFilter;
 
@@ -56,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         sendBtn = findViewById(R.id.btnSendSMS);
-        txtphoneNo = findViewById(R.id.editText);
+//        registerBtn = findViewById(R.id.register);
         txtMessage = findViewById(R.id.editText2);
+        txtphoneNo = findViewById(R.id.editText);
 
         sendBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -73,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void sendSMSMessage() {
+        if(txtMessage == null || txtphoneNo == null) {
+            return;
+        }
         phoneNo = txtphoneNo.getText().toString();
         message = txtMessage.getText().toString();
         if (ContextCompat.checkSelfPermission(this,
