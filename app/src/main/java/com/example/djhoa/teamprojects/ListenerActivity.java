@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
 public class ListenerActivity extends AppCompatActivity {
     IntentFilter intentFilter;
     TextView senderBox;
     TextView contentBox;
+    TextView latitudeBox;
+    TextView longitudeBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,15 +35,34 @@ public class ListenerActivity extends AppCompatActivity {
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
         registerReceiver(smsListener, intentFilter);
 
-        senderBox = findViewById(R.id.sender);
+        senderBox = findViewById(R.id.sender3);
         contentBox = findViewById(R.id.content);
+        latitudeBox = findViewById(R.id.latitude);
+        longitudeBox = findViewById(R.id.longitude);
         final Button nextBtn = findViewById(R.id.next);
         nextBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Message next = smsListener.getNextMessage();
                 if(next != null) {
-                    senderBox.setText(next.getSender());
-                    contentBox.setText(next.getContent());
+                    try {
+                        String[] parsed = next.getContent().split(" ");
+                        Double latitude = Double.valueOf(parsed[0]);
+                        Double longitude = Double.valueOf(parsed[1]);
+                        String content = "";
+                        for(int i=2; i<parsed.length; i++) {
+                            content += parsed[i];
+                            if( parsed.length - i != 1) {
+                                content += " ";
+                            }
+                        }
+                        latitudeBox.setText(String.valueOf(latitude));
+                        longitudeBox.setText(String.valueOf(longitude));
+                        senderBox.setText(next.getSender());
+                        contentBox.setText(content);
+                    } catch (Exception e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Toast.makeText(getApplicationContext(), "No messages in queue", Toast.LENGTH_SHORT).show();
                 }
